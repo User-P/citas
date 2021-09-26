@@ -6,7 +6,9 @@ import {
   View,
   FlatList,
   TouchableHighlight,
-  Platform
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
 import Appointment from './components/Appointment'
 import Form from './components/form';
@@ -15,11 +17,7 @@ const App = () => {
 
   const [appointments
     , setAppointments
-  ] = useState([
-    { id: "1", patient: "Barbie", owner: 'Pedro', symptoms: "No duerme" },
-    { id: "2", patient: "Kristal", owner: 'Angel', symptoms: "Estomago" },
-    { id: "3", patient: "Pato", owner: 'Homero', symptoms: "Alergia" },
-  ]);
+  ] = useState([]);
 
   const deletePatient = id => {
     setAppointments((currentAppointments) => {
@@ -30,41 +28,46 @@ const App = () => {
   const show = () => {
     setShowForm(!showForm);
   }
+  const hideKeyboard = () => {
+    Keyboard.dismiss();
+  }
 
   return (
-    <View style={styles.content}>
-      <Text style={styles.title}> Administrador de citas</Text>
-      <View>
-        <TouchableHighlight style={styles.btnShowForm} onPress={() => show()}>
-          <Text style={styles.textShowForm}> Mostrar Formulario</Text>
-        </TouchableHighlight>
-      </View>
-      <View style={styles.div}>
-        {showForm ? (
-          <>
-            <Text style={styles.title}>Crear Nueva Cita</Text>
-            <Form appointments={appointments}
-              setAppointments={setAppointments}
-              setShowForm={setShowForm}
-            />
-          </>
-        ) : (
-          <>
-            <Text style={styles.title}>{appointments.length > 0 ? 'Administra tus citas' : " No hay citas agrega una"}</Text>
-            <FlatList
-              style={styles.list}
-              data={appointments}
-              renderItem={({ item }) => <Appointment item={item}
-                deletePatient={deletePatient}
-              />}
-              keyExtractor={appointment => appointment.id}
-            />
-          </>
-        )}
+    <TouchableWithoutFeedback onPress={hideKeyboard()}>
+      <View style={styles.content}>
+        <Text style={styles.title}> Administrador de citas</Text>
+        <View>
+          <TouchableHighlight style={styles.btnShowForm} onPress={() => show()}>
+            <Text style={styles.textShowForm}> {showForm ? 'Cancelar' : ' Crear nueva Cita'}</Text>
+          </TouchableHighlight>
+        </View>
+        <View style={styles.div}>
+          {showForm ? (
+            <>
+              <Text style={styles.title}>Crear Nueva Cita</Text>
+              <Form appointments={appointments}
+                setAppointments={setAppointments}
+                setShowForm={setShowForm}
+              />
+            </>
+          ) : (
+            <>
+              <Text style={styles.title}>{appointments.length > 0 ? 'Administra tus citas' : " No hay citas, agrega una"}</Text>
+              <FlatList
+                style={styles.list}
+                data={appointments}
+                renderItem={({ item }) => <Appointment item={item}
+                  deletePatient={deletePatient}
+                />}
+                keyExtractor={appointment => appointment.id}
+              />
+            </>
+          )}
 
+        </View>
       </View>
+    </TouchableWithoutFeedback>
 
-    </View>
   );
 };
 

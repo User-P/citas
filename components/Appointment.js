@@ -20,7 +20,7 @@ const Appointment = ({ item, deletePatient }) => {
             </View>
             <View>
                 <Text style={styles.label}>Sintomas:</Text>
-                <Text style={styles.text}>{item.symptoms}</Text>
+                <Text style={styles.text}>{item.symptom}</Text>
             </View>
 
             <View>
